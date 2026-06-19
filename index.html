@@ -1,0 +1,2123 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tool Schede VRMMORPG GDR</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f5f1;
+      --panel: #ffffff;
+      --panel-2: #f8faf7;
+      --ink: #18211f;
+      --muted: #64706c;
+      --line: #d9e0dc;
+      --brand: #176b66;
+      --brand-2: #8a3a56;
+      --warn: #b56b11;
+      --good: #247a4a;
+      --bad: #a23b3b;
+      --shadow: 0 10px 28px rgba(22, 33, 31, .08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      color: var(--ink);
+      min-height: 34px;
+      padding: 7px 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
+    button.primary {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
+    button.danger:hover {
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    button.ghost {
+      background: transparent;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      padding: 8px 9px;
+      min-height: 36px;
+    }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+      line-height: 1.35;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: #202b28;
+      color: #edf3ef;
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, .14);
+      padding-bottom: 14px;
+    }
+
+    .brand strong {
+      font-size: 18px;
+    }
+
+    .brand span {
+      color: #b9c7c2;
+      font-size: 12px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .nav button {
+      justify-content: start;
+      text-align: left;
+      border-color: transparent;
+      background: transparent;
+      color: #dce7e2;
+      width: 100%;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+    }
+
+    .savebar {
+      display: grid;
+      gap: 8px;
+    }
+
+    .savebar button {
+      width: 100%;
+      border-color: rgba(255, 255, 255, .18);
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+    }
+
+    .savebar small {
+      color: #b9c7c2;
+      line-height: 1.35;
+    }
+
+    .main {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .topbar {
+      min-height: 62px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 18px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .topbar p {
+      margin: 3px 0 0;
+      color: var(--muted);
+    }
+
+    .open-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .tab-chip {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      max-width: 260px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 4px 8px 4px 10px;
+    }
+
+    .tab-chip span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .tab-chip button {
+      width: 22px;
+      height: 22px;
+      min-height: 22px;
+      padding: 0;
+      border-radius: 50%;
+      line-height: 1;
+    }
+
+    .folder-shelf {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+
+    .folder-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      padding: 8px;
+    }
+
+    .folder-card.active {
+      border-color: var(--brand);
+      background: #e5f0ed;
+    }
+
+    .folder-card button:first-child {
+      text-align: left;
+      background: transparent;
+      border-color: transparent;
+      padding: 4px;
+      min-height: 30px;
+      color: var(--ink);
+    }
+
+    .folder-card button.danger {
+      width: 30px;
+      min-height: 30px;
+      padding: 0;
+    }
+
+    .content {
+      overflow: auto;
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid.four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .panel h2,
+    .panel h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    .panel h2 {
+      font-size: 18px;
+    }
+
+    .panel h3 {
+      font-size: 15px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .tabs button.active {
+      background: #e5f0ed;
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      padding: 10px;
+      min-height: 74px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 9px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      background: var(--panel-2);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e9eeeb;
+      color: #31403c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge.good {
+      background: #ddefe5;
+      color: var(--good);
+    }
+
+    .badge.warn {
+      background: #f4e8d7;
+      color: var(--warn);
+    }
+
+    .badge.bad {
+      background: #f2dddd;
+      color: var(--bad);
+    }
+
+    .empty {
+      padding: 20px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+      background: var(--panel-2);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .field-row.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field-row.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-card {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      background: var(--panel-2);
+    }
+
+    .mini-card-head {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mini-card-head strong {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .notice {
+      border-left: 4px solid var(--brand);
+      background: #edf5f3;
+      padding: 10px 12px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: #24413d;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    @media (max-width: 1050px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        grid-template-rows: auto auto auto auto;
+      }
+
+      .nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .split,
+      .grid.two,
+      .grid.three,
+      .grid.four,
+      .metric-grid,
+      .field-row,
+      .field-row.two,
+      .field-row.three {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>VRMMORPG GDR</strong>
+        <span>Schede, statblock e combattimento</span>
+      </div>
+
+      <nav class="nav" id="nav"></nav>
+
+      <div class="savebar">
+        <button type="button" id="exportAllBtn">Salva file</button>
+        <button type="button" id="importBtn">Apri file</button>
+        <input class="file-input" id="fileInput" type="file" accept="application/json,.json">
+        <small>I dati restano anche nel browser di questo PC. Usa Salva file per creare una copia esportabile.</small>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <p id="pageSubtitle">Gestione rapida per schede, libreria e combattimento.</p>
+        </div>
+        <div class="actions" id="topActions"></div>
+      </header>
+      <section class="open-tabs" id="openTabs"></section>
+      <section class="content" id="content"></section>
+    </main>
+  </div>
+
+  <script>
+    const rankGrowth = {
+      ap: { Nessuno: 0, B: 2, A: 3, S: 4, SS: 5 },
+      mp: { Nessuno: 0, B: 2, A: 3, S: 4, SS: 5 },
+      hp: { B: 6, A: 8, S: 11, SS: 14 },
+      resource: { B: 1, A: 2, S: 3, SS: 4 }
+    };
+
+    const categories = {
+      characters: { singular: 'Personaggio', plural: 'Personaggi' },
+      statblocks: { singular: 'Statblock', plural: 'Statblock' },
+      items: { singular: 'Oggetto', plural: 'Oggetti' },
+      jobs: { singular: 'Classe / Job', plural: 'Classi / Job' },
+      skills: { singular: 'Skill', plural: 'Skill' },
+      passives: { singular: 'Passiva', plural: 'Passive' }
+    };
+
+    const dndAbilities = ['Forza', 'Destrezza', 'Costituzione', 'Intelligenza', 'Saggezza', 'Carisma'];
+    const itemTypes = ['arma', 'armatura', 'accessorio', 'consumabile', 'quest'];
+    const itemRarity = ['Comune', 'Non comune', 'Rara', 'Epica', 'Leggendaria', 'Unica'];
+    const jobCategories = ['Base', 'Rare', 'Superior', 'Unique', 'Legendary'];
+    const ranks = ['B', 'A', 'S', 'SS'];
+    const optionalPowerRanks = ['Nessuno', 'B', 'A', 'S', 'SS'];
+
+    const navItems = [
+      { id: 'dashboard', label: 'Dashboard' },
+      { id: 'characters', label: 'Scheda PG' },
+      { id: 'statblocks', label: 'Statblock' },
+      { id: 'items', label: 'Oggetti' },
+      { id: 'jobs', label: 'Classi / Job' },
+      { id: 'skills', label: 'Skill' },
+      { id: 'passives', label: 'Passive' },
+      { id: 'combat', label: 'Calcolatore Combattimento' },
+      { id: 'folders', label: 'Cartelle' },
+      { id: 'library', label: 'Libreria' }
+    ];
+
+    const starterData = {
+      activeView: 'dashboard',
+      activeTab: 'main',
+      openTabs: [],
+      activeRecord: null,
+      folders: [],
+      folderFilter: {},
+      combat: {
+        attackType: 'Fisico',
+        targetArmor: 'CA Fisica',
+        powerValue: 80,
+        scalingPercent: 150,
+        percentReduction: 20,
+        flatReduction: 10,
+        positiveConditions: '',
+        negativeConditions: ''
+      },
+      library: {
+        characters: [],
+        statblocks: [],
+        items: [],
+        jobs: [],
+        skills: [],
+        passives: []
+      }
+    };
+
+    let state = loadState();
+
+    const pageTitle = document.querySelector('#pageTitle');
+    const pageSubtitle = document.querySelector('#pageSubtitle');
+    const topActions = document.querySelector('#topActions');
+    const content = document.querySelector('#content');
+    const nav = document.querySelector('#nav');
+    const openTabs = document.querySelector('#openTabs');
+    const fileInput = document.querySelector('#fileInput');
+
+    document.querySelector('#exportAllBtn').addEventListener('click', () => exportJson('vrmmorpg_gdr_libreria.json', {
+      kind: 'full-library',
+      exportedAt: new Date().toISOString(),
+      folders: state.folders,
+      data: state.library
+    }));
+    document.querySelector('#importBtn').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', importJsonFile);
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('vrmmorpg-gdr-tool');
+      if (!saved) return clone(starterData);
+      try {
+        const parsed = JSON.parse(saved);
+        return mergeState(clone(starterData), parsed);
+      } catch {
+        return clone(starterData);
+      }
+    }
+
+    function mergeState(base, incoming) {
+      const output = { ...base, ...incoming };
+      output.combat = { ...base.combat, ...(incoming.combat || {}) };
+      output.library = { ...base.library, ...(incoming.library || {}) };
+      output.folders = Array.isArray(incoming.folders) ? incoming.folders : base.folders;
+      output.folderFilter = { ...base.folderFilter, ...(incoming.folderFilter || {}) };
+      return output;
+    }
+
+    function saveState() {
+      localStorage.setItem('vrmmorpg-gdr-tool', JSON.stringify(state));
+    }
+
+    function render() {
+      saveState();
+      renderNav();
+      renderOpenTabs();
+
+      const selected = navItems.find(item => item.id === state.activeView) || navItems[0];
+      pageTitle.textContent = selected.label;
+      pageSubtitle.textContent = subtitleFor(state.activeView);
+      topActions.innerHTML = '';
+
+      if (['characters', 'statblocks', 'items', 'jobs', 'skills', 'passives'].includes(state.activeView)) {
+        topActions.append(actionButton('Nuovo', () => createRecord(state.activeView), 'primary'));
+        topActions.append(actionButton('Nuova cartella', () => createFolder()));
+      }
+
+      if (state.activeView === 'folders') {
+        topActions.append(actionButton('Nuova cartella', () => createFolder(), 'primary'));
+      }
+
+      if (state.activeView === 'dashboard') renderDashboard();
+      if (state.activeView === 'characters') renderCollection('characters');
+      if (state.activeView === 'statblocks') renderCollection('statblocks');
+      if (state.activeView === 'items') renderCollection('items');
+      if (state.activeView === 'jobs') renderCollection('jobs');
+      if (state.activeView === 'skills') renderCollection('skills');
+      if (state.activeView === 'passives') renderCollection('passives');
+      if (state.activeView === 'combat') renderCombat();
+      if (state.activeView === 'folders') renderFolders();
+      if (state.activeView === 'library') renderLibrary();
+    }
+
+    function subtitleFor(view) {
+      const map = {
+        dashboard: 'Apri strumenti, crea elementi e organizza la libreria.',
+        characters: 'Schede PG con statistiche custom, TS/Prove e note.',
+        statblocks: 'Schede compatte per NPC, mostri, boss e summon.',
+        items: 'Oggetti con bonus a AP, MP, HP, Risorsa e CA.',
+        jobs: 'Classi con rank di crescita e requisiti.',
+        skills: 'Skill fisiche o magiche con scaling e costo.',
+        passives: 'Passive sempre attive o condizionali.',
+        combat: 'Calcolo danni, risorse e condizioni visibili in sessione.',
+        folders: 'Crea cartelle e riordina le schede.',
+        library: 'Cerca, apri, duplica, elimina, importa ed esporta elementi.'
+      };
+      return map[view] || '';
+    }
+
+    function renderNav() {
+      nav.innerHTML = '';
+      navItems.forEach(item => {
+        const button = actionButton(item.label, () => {
+          state.activeView = item.id;
+          state.activeTab = 'main';
+          state.activeRecord = null;
+          render();
+        });
+        button.classList.toggle('active', state.activeView === item.id);
+        nav.append(button);
+      });
+    }
+
+    function renderOpenTabs() {
+      openTabs.innerHTML = '';
+      if (!state.openTabs.length) {
+        openTabs.innerHTML = '<span class="subtle">Nessuna scheda aperta.</span>';
+        return;
+      }
+      const closeAll = actionButton('Chiudi tutto', () => {
+        state.openTabs = [];
+        state.activeRecord = null;
+        render();
+      }, 'danger');
+      openTabs.append(closeAll);
+      state.openTabs.forEach(tab => {
+        const record = getRecord(tab.category, tab.id);
+        if (!record) return;
+        const chip = document.createElement('div');
+        chip.className = 'tab-chip';
+        const name = document.createElement('span');
+        name.textContent = `${categories[tab.category].singular}: ${record.name || 'Senza nome'}`;
+        chip.append(name);
+        chip.addEventListener('click', () => openRecord(tab.category, tab.id));
+        const close = actionButton('x', event => {
+          event.stopPropagation();
+          state.openTabs = state.openTabs.filter(item => !(item.category === tab.category && item.id === tab.id));
+          if (state.activeRecord && state.activeRecord.category === tab.category && state.activeRecord.id === tab.id) {
+            state.activeRecord = null;
+          }
+          render();
+        });
+        chip.append(close);
+        openTabs.append(chip);
+      });
+    }
+
+    function actionButton(text, handler, className = '') {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = text;
+      if (className) button.className = className;
+      button.addEventListener('click', handler);
+      return button;
+    }
+
+    function renderDashboard() {
+      content.innerHTML = `
+        <div class="grid">
+          <div class="notice">Tool unico locale: usa solo le sezioni che ti servono e salva/carica i tuoi file.</div>
+          <div class="grid three">
+            ${dashboardCard('Scheda PG', 'characters', 'Personaggi', count('characters'))}
+            ${dashboardCard('Statblock', 'statblocks', 'NPC, mostri e boss', count('statblocks'))}
+            ${dashboardCard('Oggetti', 'items', 'Equip, consumabili e quest', count('items'))}
+            ${dashboardCard('Classi / Job', 'jobs', 'Rank e crescita', count('jobs'))}
+            ${dashboardCard('Skill', 'skills', 'Scaling e costo risorsa', count('skills'))}
+            ${dashboardCard('Passive', 'passives', 'Bonus e condizioni', count('passives'))}
+            ${dashboardCard('Calcolatore', 'combat', 'Danni e condizioni', '')}
+            ${dashboardCard('Cartelle', 'folders', 'Ordina le schede', state.folders.length)}
+            ${dashboardCard('Libreria', 'library', 'Cerca e organizza tutto', totalCount())}
+          </div>
+          <div class="panel">
+            <h2>Regole impostate</h2>
+            <div class="grid four">
+              <div class="metric"><span>Tiri</span><strong>Manuali</strong></div>
+              <div class="metric"><span>Critico</span><strong>Manuale</strong></div>
+              <div class="metric"><span>CA</span><strong>Fisica / Magica</strong></div>
+              <div class="metric"><span>D&D stat</span><strong>Solo prove / TS</strong></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      content.querySelectorAll('[data-open-view]').forEach(button => {
+        button.addEventListener('click', () => {
+          state.activeView = button.dataset.openView;
+          state.activeRecord = null;
+          render();
+        });
+      });
+    }
+
+    function dashboardCard(title, view, description, number) {
+      const numberText = number === '' ? '' : `<span class="badge">${number}</span>`;
+      return `
+        <div class="panel">
+          <h2>${escapeHtml(title)}</h2>
+          <p class="subtle">${escapeHtml(description)}</p>
+          <div class="actions">
+            <button type="button" class="primary" data-open-view="${view}">Apri</button>
+            ${numberText}
+          </div>
+        </div>
+      `;
+    }
+
+    function count(category) {
+      return recordsForCategory(category).length;
+    }
+
+    function totalCount() {
+      return Object.keys(categories).reduce((sum, category) => sum + recordsForCategory(category).length, 0);
+    }
+
+    function recordsForCategory(category) {
+      return state.library[category] || [];
+    }
+
+    function renderCollection(category) {
+      const selected = state.activeRecord && state.activeRecord.category === category
+        ? getRecord(category, state.activeRecord.id)
+        : null;
+      const records = recordsForCategory(category);
+
+      if (selected) {
+        content.innerHTML = `
+          <div class="panel" id="editorPanel"></div>
+        `;
+        renderEditor(category, selected);
+        return;
+      }
+
+      if (!records.length) {
+        content.innerHTML = `
+          <div class="panel">
+            <div class="actions" style="margin-bottom: 12px;">
+              <button type="button" id="emptyNewBtn" class="primary">Nuovo</button>
+              <button type="button" id="emptyFolderBtn">Nuova cartella</button>
+            </div>
+            ${folderShelf(category, '')}
+            <div class="empty">
+              Nessun elemento in ${categories[category].plural}. Crea il primo elemento con il pulsante Nuovo.
+            </div>
+          </div>
+        `;
+        content.querySelector('#emptyNewBtn').addEventListener('click', () => createRecord(category));
+        content.querySelector('#emptyFolderBtn').addEventListener('click', () => createFolder(category));
+        bindFolderShelf(category);
+        return;
+      }
+
+      const activeFolder = state.folderFilter[category] || '';
+      const visibleItems = records.filter(item => !activeFolder || (item.folderId || '') === activeFolder);
+
+      content.innerHTML = `
+        <div class="panel">
+          <h2>${categories[category].plural}</h2>
+          <div class="actions" style="margin-bottom: 12px;">
+            <label style="min-width: 230px;">Filtra cartella
+              <select id="folderFilter">
+                ${folderOptions(activeFolder, true)}
+              </select>
+            </label>
+            <button type="button" id="newFolderBtn">Nuova cartella</button>
+          </div>
+          ${folderShelf(category, activeFolder)}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Cartella</th>
+                  <th>Dettaglio</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${visibleItems.map(item => rowFor(category, item)).join('') || `<tr><td colspan="4">Nessun elemento in questa cartella.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      content.querySelector('#folderFilter').addEventListener('change', event => {
+        state.folderFilter[category] = event.target.value;
+        render();
+      });
+      content.querySelector('#newFolderBtn').addEventListener('click', () => createFolder(category));
+      bindFolderShelf(category);
+
+      content.querySelectorAll('[data-open-record]').forEach(button => {
+        button.addEventListener('click', () => openRecord(button.dataset.category, button.dataset.openRecord));
+      });
+      content.querySelectorAll('[data-duplicate-record]').forEach(button => {
+        button.addEventListener('click', () => duplicateRecord(button.dataset.category, button.dataset.duplicateRecord));
+      });
+      content.querySelectorAll('[data-delete-record]').forEach(button => {
+        button.addEventListener('click', () => deleteRecord(button.dataset.category, button.dataset.deleteRecord));
+      });
+      content.querySelectorAll('[data-export-record]').forEach(button => {
+        button.addEventListener('click', () => exportRecord(button.dataset.category, button.dataset.exportRecord));
+      });
+      content.querySelectorAll('[data-move-folder]').forEach(select => {
+        select.addEventListener('change', () => {
+          const record = getRecord(select.dataset.category, select.dataset.moveFolder);
+          if (!record) return;
+          record.folderId = select.value;
+          render();
+        });
+      });
+    }
+
+    function rowFor(category, item) {
+      return `
+        <tr>
+          <td><strong>${escapeHtml(item.name || 'Senza nome')}</strong></td>
+          <td>
+            <select data-category="${category}" data-move-folder="${item.id}">
+              ${folderOptions(item.folderId || '', false)}
+            </select>
+          </td>
+          <td>${escapeHtml(detailFor(category, item))}</td>
+          <td>
+            <div class="actions">
+              <button type="button" data-category="${category}" data-open-record="${item.id}">Apri</button>
+              <button type="button" data-category="${category}" data-duplicate-record="${item.id}">Duplica</button>
+              <button type="button" data-category="${category}" data-export-record="${item.id}">Esporta</button>
+              <button type="button" class="danger" data-category="${category}" data-delete-record="${item.id}">Elimina</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function detailFor(category, item) {
+      if (category === 'characters') return `${item.activeJob || 'Nessun job'}`;
+      if (category === 'statblocks') return `Lv ${item.level || 1} - ${item.type || 'NPC'} - ${item.role || ''}`;
+      if (category === 'items') return `${item.type || 'oggetto'} - ${item.rarity || 'Comune'}`;
+      if (category === 'jobs') return `Lv ${item.level || 1} - ${item.category || 'Base'} - ${item.resourceType || 'Mana'}`;
+      if (category === 'skills') return `${item.kind || 'Fisica'} - ${item.scaling || 'AP'} ${item.scalingPercent || 100}%`;
+      if (category === 'passives') return `${item.type || 'Generica'} - ${item.activation || 'Sempre attiva'}`;
+      return '';
+    }
+
+    function renderEditor(category, record) {
+      const panel = document.querySelector('#editorPanel');
+      if (!panel) return;
+
+      if (category === 'characters') panel.innerHTML = characterEditor(record);
+      if (category === 'statblocks') panel.innerHTML = statblockEditor(record);
+      if (category === 'items') panel.innerHTML = itemEditor(record);
+      if (category === 'jobs') panel.innerHTML = jobEditor(record);
+      if (category === 'skills') panel.innerHTML = skillEditor(record);
+      if (category === 'passives') panel.innerHTML = passiveEditor(record);
+
+      bindEditor(panel, category, record.id);
+      bindSpecialEditorActions(panel, category, record.id);
+    }
+
+    function tabsHtml(tabs) {
+      return `<div class="tabs">${tabs.map(tab => `<button type="button" data-tab="${tab.id}" class="${state.activeTab === tab.id ? 'active' : ''}">${escapeHtml(tab.label)}</button>`).join('')}</div>`;
+    }
+
+    function commonHeader(record, category) {
+      return `
+        <div class="actions" style="justify-content: space-between; margin-bottom: 12px;">
+          <h2 style="margin: 0;">${escapeHtml(record.name || categories[category].singular)}</h2>
+          <div class="actions">
+            <button type="button" data-back-list>Indietro</button>
+            <button type="button" data-open-current>Apri in scheda</button>
+          </div>
+        </div>
+        <div class="actions" style="margin-bottom: 12px;">
+          <label style="min-width: 240px;">Cartella
+            <select data-field="folderId">
+              ${folderOptions(record.folderId || '', false)}
+            </select>
+          </label>
+        </div>
+      `;
+    }
+
+    function characterEditor(record) {
+      const totals = calculateCharacterTotals(record);
+      const activeJob = activeJobForCharacter(record);
+      const tabs = [
+        { id: 'main', label: 'Principale' },
+        { id: 'skills', label: 'Skill' },
+        { id: 'passives', label: 'Passive' },
+        { id: 'inventory', label: 'Inventario' },
+        { id: 'job', label: 'Job Crystal' },
+        { id: 'notes', label: 'Note' }
+      ];
+      return `
+        ${commonHeader(record, 'characters')}
+        ${tabsHtml(tabs)}
+        ${state.activeTab === 'main' ? `
+          <div class="stack">
+            <div class="field-row two">
+              ${inputField('Nome PG', 'name', record.name)}
+              ${selectField('Classe / Job attivo', 'activeJob', record.activeJob, jobNameOptions())}
+            </div>
+            <div class="field-row two">
+              ${inputField('Tipo risorsa', 'resourceType', record.resourceType || resourceTypeForJob(record.activeJob))}
+              ${metric('Livello job attivo', activeJob ? Number(activeJob.level || 1) : 0)}
+            </div>
+            <div class="metric-grid">
+              ${metric('AP totale', totals.ap)}
+              ${metric('MP totale', totals.mp)}
+              ${metric('HP massimo', totals.hp)}
+              ${metric('Risorsa massima', totals.resource)}
+              ${metric('CA Fisica totale', totals.physicalArmor)}
+              ${metric('CA Magica totale', totals.magicalArmor)}
+            </div>
+            <div class="field-row four">
+              ${numberField('HP attuali', 'currentHp', record.currentHp)}
+              ${numberField('Risorsa attuale', 'currentResource', record.currentResource)}
+              ${numberField('CA Fisica manuale', 'physicalArmorManual', record.physicalArmorManual)}
+              ${numberField('CA Magica manuale', 'magicalArmorManual', record.magicalArmorManual)}
+            </div>
+            <h3>TS/Prove</h3>
+            <div class="field-row three">
+              ${abilitiesFields(record)}
+            </div>
+          </div>
+        ` : ''}
+        ${state.activeTab === 'skills' ? listChooser(record, 'skills', 'Skill conosciute', state.library.skills, skillSummary, 'skills') : ''}
+        ${state.activeTab === 'passives' ? listChooser(record, 'passives', 'Passive attive o note', state.library.passives, passiveSummary, 'passives') : ''}
+        ${state.activeTab === 'inventory' ? inventoryEditor(record) : ''}
+        ${state.activeTab === 'job' ? jobCrystalEditor(record) : ''}
+        ${state.activeTab === 'notes' ? `${textareaField('Note', 'notes', record.notes)}` : ''}
+      `;
+    }
+
+    function statblockEditor(record) {
+      const tabs = [
+        { id: 'main', label: 'Principale' },
+        { id: 'skills', label: 'Skill' },
+        { id: 'passives', label: 'Passive' },
+        { id: 'combat', label: 'Combattimento' },
+        { id: 'notes', label: 'Tattica / Drop' }
+      ];
+      return `
+        ${commonHeader(record, 'statblocks')}
+        ${tabsHtml(tabs)}
+        ${state.activeTab === 'main' ? `
+          <div class="stack">
+            <div class="field-row two">
+              ${inputField('Nome', 'name', record.name)}
+              ${selectField('Tipo', 'type', record.type, ['NPC', 'Mostro', 'Boss', 'Summon'])}
+            </div>
+            <div class="field-row two">
+              ${numberField('Livello', 'level', record.level)}
+              ${inputField('Ruolo', 'role', record.role)}
+            </div>
+            <div class="field-row four">
+              ${numberField('HP attuali', 'currentHp', record.currentHp)}
+              ${numberField('HP massimi', 'maxHp', record.maxHp)}
+              ${numberField('Risorsa attuale', 'currentResource', record.currentResource)}
+              ${numberField('Risorsa massima', 'maxResource', record.maxResource)}
+            </div>
+            <div class="field-row four">
+              ${numberField('Attack Power', 'ap', record.ap)}
+              ${numberField('Magic Power', 'mp', record.mp)}
+              ${numberField('CA Fisica', 'physicalArmor', record.physicalArmor)}
+              ${numberField('CA Magica', 'magicalArmor', record.magicalArmor)}
+            </div>
+            <h3>TS/Prove</h3>
+            <div class="field-row three">
+              ${abilitiesFields(record)}
+            </div>
+          </div>
+        ` : ''}
+        ${state.activeTab === 'skills' ? listChooser(record, 'skills', 'Skill rapide', state.library.skills, skillSummary, 'skills') : ''}
+        ${state.activeTab === 'passives' ? listChooser(record, 'passives', 'Passive rapide', state.library.passives, passiveSummary, 'passives') : ''}
+        ${state.activeTab === 'combat' ? conditionsEditor(record) : ''}
+        ${state.activeTab === 'notes' ? `
+          <div class="stack">
+            ${textareaField('Tattica', 'tactics', record.tactics)}
+            ${textareaField('Drop', 'drop', record.drop)}
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function itemEditor(record) {
+      return `
+        ${commonHeader(record, 'items')}
+        <div class="stack">
+          <div class="field-row two">
+            ${inputField('Nome', 'name', record.name)}
+            ${selectField('Tipo', 'type', record.type, itemTypes)}
+          </div>
+          <div class="field-row two">
+            ${selectField('Rarita', 'rarity', record.rarity, itemRarity)}
+            ${inputField('Requisiti', 'requirements', record.requirements)}
+          </div>
+          <div class="field-row three">
+            ${numberField('Bonus AP', 'bonusAp', record.bonusAp)}
+            ${numberField('Bonus MP', 'bonusMp', record.bonusMp)}
+            ${numberField('Bonus HP', 'bonusHp', record.bonusHp)}
+          </div>
+          <div class="field-row three">
+            ${numberField('Bonus Risorsa', 'bonusResource', record.bonusResource)}
+            ${numberField('Bonus CA Fisica', 'bonusPhysicalArmor', record.bonusPhysicalArmor)}
+            ${numberField('Bonus CA Magica', 'bonusMagicalArmor', record.bonusMagicalArmor)}
+          </div>
+          ${inputField('Skill concessa', 'grantedSkill', record.grantedSkill)}
+          ${textareaField('Effetto speciale', 'specialEffect', record.specialEffect)}
+          ${textareaField('Descrizione', 'description', record.description)}
+        </div>
+      `;
+    }
+
+    function jobEditor(record) {
+      const level = Number(record.level || 1);
+      const baseAp = level * growthFor('ap', record.rankAp);
+      const baseMp = level * growthFor('mp', record.rankMp);
+      const baseHp = level * growthFor('hp', record.rankHp);
+      const baseResource = level * growthFor('resource', record.rankResource);
+      return `
+        ${commonHeader(record, 'jobs')}
+        <div class="stack">
+          <div class="field-row three">
+            ${inputField('Nome classe / job', 'name', record.name)}
+            ${selectField('Categoria', 'category', record.category, jobCategories)}
+            ${numberField('Livello', 'level', record.level)}
+          </div>
+          <div class="field-row">
+            ${inputField('Tipo risorsa', 'resourceType', record.resourceType)}
+            ${selectField('Rank AP', 'rankAp', record.rankAp, optionalPowerRanks)}
+            ${selectField('Rank MP', 'rankMp', record.rankMp, optionalPowerRanks)}
+            ${selectField('Rank HP', 'rankHp', record.rankHp, ranks)}
+          </div>
+          <div class="field-row two">
+            ${selectField('Rank Risorsa', 'rankResource', record.rankResource, ranks)}
+            <div class="metric"><span>Per livello</span><strong>AP ${growthFor('ap', record.rankAp)} / MP ${growthFor('mp', record.rankMp)} / HP ${growthFor('hp', record.rankHp)} / Ris ${growthFor('resource', record.rankResource)}</strong></div>
+          </div>
+          <div class="metric-grid">
+            ${metric('AP base al livello', baseAp)}
+            ${metric('MP base al livello', baseMp)}
+            ${metric('HP base al livello', baseHp)}
+            ${metric('Risorsa base al livello', baseResource)}
+          </div>
+          ${listChooser(record, 'initialSkills', 'Skill iniziali', state.library.skills, skillSummary, 'skills')}
+          ${listChooser(record, 'classPassives', 'Passive classe', state.library.passives, passiveSummary, 'passives')}
+          ${textareaField('Requisiti di sblocco', 'unlockRequirements', record.unlockRequirements)}
+          ${textareaField('Evoluzioni possibili', 'evolutions', record.evolutions)}
+          ${textareaField('Note lore', 'loreNotes', record.loreNotes)}
+        </div>
+      `;
+    }
+
+    function skillEditor(record) {
+      return `
+        ${commonHeader(record, 'skills')}
+        <div class="stack">
+          <div class="field-row two">
+            ${inputField('Nome skill', 'name', record.name)}
+            ${selectField('Tipo', 'kind', record.kind, ['Fisica', 'Magica'])}
+          </div>
+          <div class="field-row">
+            ${selectField('CA bersaglio', 'targetArmor', record.targetArmor, ['CA Fisica', 'CA Magica'])}
+            ${selectField('Scaling', 'scaling', record.scaling, ['AP', 'MP'])}
+            ${numberField('Percentuale scaling', 'scalingPercent', record.scalingPercent)}
+            ${numberField('Costo risorsa', 'resourceCost', record.resourceCost)}
+          </div>
+          ${textareaField('Descrizione', 'description', record.description)}
+          ${textareaField('Effetto aggiuntivo', 'extraEffect', record.extraEffect)}
+          ${textareaField('Note', 'notes', record.notes)}
+          <button type="button" class="primary" data-send-to-combat>Calcola danno</button>
+        </div>
+      `;
+    }
+
+    function passiveEditor(record) {
+      return `
+        ${commonHeader(record, 'passives')}
+        <div class="stack">
+          <div class="field-row two">
+            ${inputField('Nome passiva', 'name', record.name)}
+            ${inputField('Tipo', 'type', record.type)}
+          </div>
+          <div class="field-row two">
+            ${selectField('Attivazione', 'activation', record.activation, ['Sempre attiva', 'Condizionale'])}
+            ${inputField('Condizione di attivazione', 'condition', record.condition)}
+          </div>
+          <div class="field-row three">
+            ${numberField('Bonus AP', 'bonusAp', record.bonusAp)}
+            ${numberField('Bonus MP', 'bonusMp', record.bonusMp)}
+            ${numberField('Bonus HP', 'bonusHp', record.bonusHp)}
+          </div>
+          <div class="field-row three">
+            ${numberField('Bonus Risorsa', 'bonusResource', record.bonusResource)}
+            ${numberField('Bonus CA Fisica', 'bonusPhysicalArmor', record.bonusPhysicalArmor)}
+            ${numberField('Bonus CA Magica', 'bonusMagicalArmor', record.bonusMagicalArmor)}
+          </div>
+          ${textareaField('Effetto', 'effect', record.effect)}
+          ${textareaField('Note', 'notes', record.notes)}
+        </div>
+      `;
+    }
+
+    function bindEditor(panel, category, id) {
+      panel.querySelectorAll('[data-field]').forEach(field => {
+        field.addEventListener('input', () => {
+          const record = getRecord(category, id);
+          if (!record) return;
+          const key = field.dataset.field;
+          record[key] = field.type === 'number' ? Number(field.value || 0) : field.value;
+          saveState();
+        });
+        field.addEventListener('change', () => {
+          const record = getRecord(category, id);
+          if (!record) return;
+          const key = field.dataset.field;
+          record[key] = field.type === 'number' ? Number(field.value || 0) : field.value;
+          render();
+        });
+      });
+
+      panel.querySelectorAll('[data-tab]').forEach(button => {
+        button.addEventListener('click', () => {
+          state.activeTab = button.dataset.tab;
+          render();
+        });
+      });
+
+      panel.querySelectorAll('[data-list-add]').forEach(select => {
+        select.addEventListener('change', () => {
+          const record = getRecord(category, id);
+          if (!record || !select.value) return;
+          const listName = select.dataset.listAdd;
+          record[listName] = record[listName] || [];
+          if (!record[listName].includes(select.value)) record[listName].push(select.value);
+          select.value = '';
+          render();
+        });
+      });
+
+      panel.querySelectorAll('[data-list-remove]').forEach(button => {
+        button.addEventListener('click', () => {
+          const record = getRecord(category, id);
+          if (!record) return;
+          const listName = button.dataset.listRemove;
+          record[listName] = (record[listName] || []).filter(item => item !== button.dataset.itemId);
+          render();
+        });
+      });
+    }
+
+    function bindSpecialEditorActions(panel, category, id) {
+      const openButton = panel.querySelector('[data-open-current]');
+      if (openButton) openButton.addEventListener('click', () => openRecord(category, id));
+
+      const backButton = panel.querySelector('[data-back-list]');
+      if (backButton) {
+        backButton.addEventListener('click', () => {
+          state.activeRecord = null;
+          state.activeTab = 'main';
+          render();
+        });
+      }
+
+      const combatButton = panel.querySelector('[data-send-to-combat]');
+      if (combatButton) {
+        combatButton.addEventListener('click', () => {
+          const skill = getRecord(category, id);
+          if (!skill) return;
+          state.combat.attackType = skill.kind || 'Fisico';
+          state.combat.targetArmor = skill.targetArmor || 'CA Fisica';
+          state.combat.scalingPercent = Number(skill.scalingPercent || 100);
+          state.activeView = 'combat';
+          render();
+        });
+      }
+    }
+
+    function inputField(label, key, value = '') {
+      return `<label>${escapeHtml(label)}<input data-field="${key}" value="${escapeAttr(value || '')}"></label>`;
+    }
+
+    function numberField(label, key, value = 0) {
+      return `<label>${escapeHtml(label)}<input type="number" data-field="${key}" value="${Number(value || 0)}"></label>`;
+    }
+
+    function textareaField(label, key, value = '') {
+      return `<label>${escapeHtml(label)}<textarea data-field="${key}">${escapeHtml(value || '')}</textarea></label>`;
+    }
+
+    function selectField(label, key, value, options) {
+      return `
+        <label>${escapeHtml(label)}
+          <select data-field="${key}">
+            ${options.map(option => `<option value="${escapeAttr(option)}" ${option === value ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('')}
+          </select>
+        </label>
+      `;
+    }
+
+    function metric(label, value) {
+      return `<div class="metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(value ?? 0))}</strong></div>`;
+    }
+
+    function abilitiesFields(record) {
+      const abilities = record.abilities || defaultAbilities();
+      return dndAbilities.map(name => {
+        const ability = abilities[name] || { mod: 0 };
+        return `
+          <div class="mini-card">
+            <strong>${name}</strong>
+            <label>Modificatore<input type="number" data-ability-mod="${name}" value="${Number(ability.mod || 0)}"></label>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function listChooser(record, listKey, title, source, summaryFn, sourceCategory) {
+      const ids = record[listKey] || [];
+      const cards = ids.map(id => {
+        const item = source.find(entry => entry.id === id);
+        if (!item) return '';
+        return `
+          <div class="mini-card">
+            <div class="mini-card-head">
+              <strong>${escapeHtml(item.name || 'Senza nome')}</strong>
+              <button type="button" class="danger" data-list-remove="${listKey}" data-item-id="${id}">Rimuovi</button>
+            </div>
+            <div class="subtle">${escapeHtml(summaryFn(item))}</div>
+          </div>
+        `;
+      }).join('');
+
+      const available = source.filter(item => !ids.includes(item.id));
+      return `
+        <div class="stack">
+          <h3>${escapeHtml(title)}</h3>
+          <label>Aggiungi
+            <select data-list-add="${listKey}">
+              <option value="">Seleziona...</option>
+              ${available.map(item => `<option value="${item.id}">${escapeHtml(item.name || 'Senza nome')}</option>`).join('')}
+            </select>
+          </label>
+          <div class="mini-list">${cards || `<div class="empty">Nessun elemento collegato.</div>`}</div>
+          ${source.length ? '' : `<div class="subtle">Crea prima elementi in ${categories[sourceCategory].plural}.</div>`}
+        </div>
+      `;
+    }
+
+    function inventoryEditor(record) {
+      const inventory = record.inventory || {};
+      const sections = [
+        ['weapons', 'Armi'],
+        ['armors', 'Armature'],
+        ['accessories', 'Accessori'],
+        ['consumables', 'Consumabili'],
+        ['questItems', 'Oggetti quest']
+      ];
+      return `
+        <div class="stack">
+          ${listChooser(record, 'inventoryItems', 'Oggetti in inventario', state.library.items, itemSummary, 'items')}
+          ${listChooser(record, 'equippedItems', 'Oggetti equipaggiati per bonus', state.library.items, itemSummary, 'items')}
+          <h3>Inventario libero</h3>
+          ${sections.map(([key, label]) => `
+            <label>${label}
+              <textarea data-inventory="${key}">${escapeHtml(inventory[key] || '')}</textarea>
+            </label>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function jobCrystalEditor(record) {
+      return `
+        <div class="stack">
+          ${inputField('Classe attiva', 'activeJob', record.activeJob)}
+          ${textareaField('Classi sbloccate', 'unlockedJobs', record.unlockedJobs)}
+          ${textareaField('Classi congelate', 'frozenJobs', record.frozenJobs)}
+          ${textareaField('Requisiti visibili', 'visibleRequirements', record.visibleRequirements)}
+          ${textareaField('Note', 'jobNotes', record.jobNotes)}
+        </div>
+      `;
+    }
+
+    function conditionsEditor(record) {
+      return `
+        <div class="stack">
+          ${textareaField('Condizioni positive', 'positiveConditions', record.positiveConditions)}
+          ${textareaField('Condizioni negative', 'negativeConditions', record.negativeConditions)}
+        </div>
+      `;
+    }
+
+    function bindNestedInputs(root, category, id) {
+      root.querySelectorAll('[data-ability-mod], [data-inventory]').forEach(field => {
+        field.addEventListener('input', () => {
+          const record = getRecord(category, id);
+          if (!record) return;
+          if (field.dataset.abilityMod) {
+            record.abilities = record.abilities || defaultAbilities();
+            const name = field.dataset.abilityMod;
+            record.abilities[name] = record.abilities[name] || { mod: 0 };
+            record.abilities[name].mod = Number(field.value || 0);
+          }
+          if (field.dataset.inventory) {
+            record.inventory = record.inventory || {};
+            record.inventory[field.dataset.inventory] = field.value;
+          }
+          saveState();
+        });
+      });
+    }
+
+    function calculateCharacterTotals(record) {
+      const job = activeJobForCharacter(record);
+      const level = job ? Number(job.level || 1) : 0;
+      const jobGrowth = {
+        ap: job ? growthFor('ap', job.rankAp) : 0,
+        mp: job ? growthFor('mp', job.rankMp) : 0,
+        hp: job ? growthFor('hp', job.rankHp) : 0,
+        resource: job ? growthFor('resource', job.rankResource) : 0
+      };
+      const equip = calculateItemBonuses(record);
+      const passive = calculatePassiveBonuses(record);
+      return {
+        ap: level * jobGrowth.ap + equip.ap + passive.ap,
+        mp: level * jobGrowth.mp + equip.mp + passive.mp,
+        hp: level * jobGrowth.hp + equip.hp + passive.hp,
+        resource: level * jobGrowth.resource + equip.resource + passive.resource,
+        physicalArmor: Number(record.physicalArmorManual || 0) + equip.physicalArmor + passive.physicalArmor,
+        magicalArmor: Number(record.magicalArmorManual || 0) + equip.magicalArmor + passive.magicalArmor,
+        equip,
+        passive
+      };
+    }
+
+    function activeJobForCharacter(record) {
+      return state.library.jobs.find(entry => entry.name === record.activeJob);
+    }
+
+    function growthFor(stat, rank) {
+      return rankGrowth[stat][rank || 'B'] ?? 0;
+    }
+
+    function calculateItemBonuses(record) {
+      const result = { ap: 0, mp: 0, hp: 0, resource: 0, physicalArmor: 0, magicalArmor: 0 };
+      const equipped = record.equippedItems || [];
+      if (equipped.length) {
+        equipped.forEach(id => {
+          const item = state.library.items.find(entry => entry.id === id);
+          if (!item) return;
+          result.ap += Number(item.bonusAp || 0);
+          result.mp += Number(item.bonusMp || 0);
+          result.hp += Number(item.bonusHp || 0);
+          result.resource += Number(item.bonusResource || 0);
+          result.physicalArmor += Number(item.bonusPhysicalArmor || 0);
+          result.magicalArmor += Number(item.bonusMagicalArmor || 0);
+        });
+        return result;
+      }
+
+      const inventoryText = Object.values(record.inventory || {}).join('\n').toLowerCase();
+      state.library.items.forEach(item => {
+        if (!item.name || !inventoryText.includes(item.name.toLowerCase())) return;
+        result.ap += Number(item.bonusAp || 0);
+        result.mp += Number(item.bonusMp || 0);
+        result.hp += Number(item.bonusHp || 0);
+        result.resource += Number(item.bonusResource || 0);
+        result.physicalArmor += Number(item.bonusPhysicalArmor || 0);
+        result.magicalArmor += Number(item.bonusMagicalArmor || 0);
+      });
+      return result;
+    }
+
+    function calculatePassiveBonuses(record) {
+      const result = { ap: 0, mp: 0, hp: 0, resource: 0, physicalArmor: 0, magicalArmor: 0 };
+      (record.passives || []).forEach(id => {
+        const passive = state.library.passives.find(entry => entry.id === id);
+        if (!passive || passive.activation === 'Condizionale') return;
+        result.ap += Number(passive.bonusAp || 0);
+        result.mp += Number(passive.bonusMp || 0);
+        result.hp += Number(passive.bonusHp || 0);
+        result.resource += Number(passive.bonusResource || 0);
+        result.physicalArmor += Number(passive.bonusPhysicalArmor || 0);
+        result.magicalArmor += Number(passive.bonusMagicalArmor || 0);
+      });
+      return result;
+    }
+
+    function resourceTypeForJob(jobName) {
+      const job = state.library.jobs.find(entry => entry.name === jobName);
+      return job ? job.resourceType : 'Mana';
+    }
+
+    function jobNameOptions() {
+      const names = state.library.jobs.map(job => job.name).filter(Boolean);
+      return names.length ? names : [''];
+    }
+
+    function skillSummary(skill) {
+      return `${skill.kind || 'Fisica'} - ${skill.targetArmor || 'CA Fisica'} - ${skill.scaling || 'AP'} ${skill.scalingPercent || 100}% - costo ${skill.resourceCost || 0}`;
+    }
+
+    function itemSummary(item) {
+      return `${item.type || 'oggetto'} - ${item.rarity || 'Comune'} - AP ${item.bonusAp || 0}, MP ${item.bonusMp || 0}, HP ${item.bonusHp || 0}, Ris ${item.bonusResource || 0}, CA F ${item.bonusPhysicalArmor || 0}, CA M ${item.bonusMagicalArmor || 0}`;
+    }
+
+    function passiveSummary(passive) {
+      return `${passive.activation || 'Sempre attiva'} - ${passive.effect || 'Nessun effetto scritto'}`;
+    }
+
+    function renderCombat() {
+      const c = state.combat;
+      const base = Number(c.powerValue || 0) * (Number(c.scalingPercent || 0) / 100);
+      const afterPercent = base * (1 - Number(c.percentReduction || 0) / 100);
+      const finalDamage = Math.max(0, afterPercent - Number(c.flatReduction || 0));
+
+      content.innerHTML = `
+        <div class="split">
+          <div class="panel">
+            <h2>Calcolatore danno</h2>
+            <div class="stack">
+              <div class="field-row two">
+                ${combatSelect('Tipo attacco', 'attackType', c.attackType, ['Fisico', 'Magico'])}
+                ${combatSelect('CA bersaglio usata', 'targetArmor', c.targetArmor, ['CA Fisica', 'CA Magica'])}
+              </div>
+              <div class="field-row four">
+                ${combatNumber('Valore AP o MP', 'powerValue', c.powerValue)}
+                ${combatNumber('Percentuale skill', 'scalingPercent', c.scalingPercent)}
+                ${combatNumber('Riduzione percentuale', 'percentReduction', c.percentReduction)}
+                ${combatNumber('Riduzione flat', 'flatReduction', c.flatReduction)}
+              </div>
+              <div class="metric-grid">
+                ${metric('Danno base', formatNumber(base))}
+                ${metric('Dopo riduzione %', formatNumber(afterPercent))}
+                ${metric('Riduzione flat', Number(c.flatReduction || 0))}
+                ${metric('Danno finale', formatNumber(finalDamage))}
+              </div>
+              <div class="notice">Il dado, il critico e il confronto col tiro per colpire restano manuali.</div>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Condizioni in combattimento</h2>
+            <div class="stack">
+              ${combatTextarea('Condizioni positive', 'positiveConditions', c.positiveConditions)}
+              ${combatTextarea('Condizioni negative', 'negativeConditions', c.negativeConditions)}
+            </div>
+          </div>
+        </div>
+      `;
+
+      content.querySelectorAll('[data-combat]').forEach(field => {
+      field.addEventListener('input', () => {
+          state.combat[field.dataset.combat] = field.type === 'number' ? Number(field.value || 0) : field.value;
+          saveState();
+        });
+        field.addEventListener('change', () => {
+          state.combat[field.dataset.combat] = field.type === 'number' ? Number(field.value || 0) : field.value;
+          render();
+        });
+      });
+    }
+
+    function combatNumber(label, key, value = 0) {
+      return `<label>${escapeHtml(label)}<input type="number" data-combat="${key}" value="${Number(value || 0)}"></label>`;
+    }
+
+    function combatSelect(label, key, value, options) {
+      return `
+        <label>${escapeHtml(label)}
+          <select data-combat="${key}">
+            ${options.map(option => `<option value="${escapeAttr(option)}" ${option === value ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('')}
+          </select>
+        </label>
+      `;
+    }
+
+    function combatTextarea(label, key, value = '') {
+      return `<label>${escapeHtml(label)}<textarea data-combat="${key}">${escapeHtml(value || '')}</textarea></label>`;
+    }
+
+    function renderFolders() {
+      const rows = state.folders.map(folder => {
+        const amount = visibleCategories().reduce((sum, category) => {
+          return sum + state.library[category].filter(item => item.folderId === folder.id).length;
+        }, 0);
+        return `
+          <tr>
+            <td>
+              <input data-folder-name="${folder.id}" value="${escapeAttr(folder.name || 'Senza nome')}">
+            </td>
+            <td>${amount}</td>
+            <td>
+              <div class="actions">
+                <button type="button" class="danger" data-delete-folder="${folder.id}">Elimina cartella</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      content.innerHTML = `
+        <div class="panel">
+          <h2>Cartelle</h2>
+          <div class="actions" style="margin-bottom: 12px;">
+            <button type="button" class="primary" id="folderCreateBtn">Nuova cartella</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Schede dentro</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows || `<tr><td colspan="3">Nessuna cartella creata.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      content.querySelector('#folderCreateBtn').addEventListener('click', () => createFolder());
+      content.querySelectorAll('[data-folder-name]').forEach(input => {
+        input.addEventListener('input', () => {
+          const folder = state.folders.find(item => item.id === input.dataset.folderName);
+          if (!folder) return;
+          folder.name = input.value;
+          saveState();
+        });
+      });
+      content.querySelectorAll('[data-delete-folder]').forEach(button => {
+        button.addEventListener('click', () => deleteFolder(button.dataset.deleteFolder));
+      });
+    }
+
+    function folderOptions(selectedId = '', includeAll = false) {
+      const first = includeAll
+        ? `<option value="" ${selectedId === '' ? 'selected' : ''}>Tutte</option>`
+        : `<option value="" ${selectedId === '' ? 'selected' : ''}>Senza cartella</option>`;
+      return first + state.folders.map(folder => {
+        return `<option value="${folder.id}" ${folder.id === selectedId ? 'selected' : ''}>${escapeHtml(folder.name || 'Senza nome')}</option>`;
+      }).join('');
+    }
+
+    function folderShelf(category, activeFolder) {
+      const folderCards = state.folders.map(folder => {
+        const amount = state.library[category].filter(item => item.folderId === folder.id).length;
+        const active = activeFolder === folder.id ? ' active' : '';
+        return `
+          <div class="folder-card${active}">
+            <button type="button" data-folder-pick="${folder.id}">
+              <strong>${escapeHtml(folder.name || 'Senza nome')}</strong><br>
+              <span class="subtle">${amount} schede</span>
+            </button>
+            <button type="button" class="danger" title="Elimina cartella" data-delete-folder="${folder.id}">x</button>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="folder-shelf">
+          <div class="folder-card${activeFolder === '' ? ' active' : ''}">
+            <button type="button" data-folder-pick="">
+              <strong>Tutte</strong><br>
+              <span class="subtle">${state.library[category].length} schede</span>
+            </button>
+          </div>
+          ${folderCards || `
+            <div class="folder-card">
+              <button type="button" data-folder-pick="">
+                <strong>Nessuna cartella</strong><br>
+                <span class="subtle">Crea una cartella per iniziare</span>
+              </button>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function bindFolderShelf(category) {
+      content.querySelectorAll('[data-folder-pick]').forEach(button => {
+        button.addEventListener('click', () => {
+          state.folderFilter[category] = button.dataset.folderPick;
+          render();
+        });
+      });
+      content.querySelectorAll('[data-delete-folder]').forEach(button => {
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          deleteFolder(button.dataset.deleteFolder);
+        });
+      });
+    }
+
+    function folderName(id) {
+      if (!id) return 'Senza cartella';
+      const folder = state.folders.find(item => item.id === id);
+      return folder ? folder.name : 'Senza cartella';
+    }
+
+    function visibleCategories() {
+      return Object.keys(categories);
+    }
+
+    function createFolder(category = '') {
+      const name = prompt('Nome cartella');
+      if (!name) return;
+      const cleanName = name.trim();
+      if (!cleanName) return;
+      const duplicate = state.folders.find(folder => (folder.name || '').toLowerCase() === cleanName.toLowerCase());
+      if (duplicate) {
+        alert('Esiste gia una cartella con questo nome.');
+        if (category) state.folderFilter[category] = duplicate.id;
+        render();
+        return;
+      }
+      const folder = { id: uid(), name: cleanName };
+      state.folders.push(folder);
+      if (category) state.folderFilter[category] = folder.id;
+      render();
+    }
+
+    function deleteFolder(id) {
+      const folder = state.folders.find(item => item.id === id);
+      if (!folder) return;
+      const ok = confirm(`Eliminare la cartella "${folder.name || 'Senza nome'}"? Le schede non verranno eliminate.`);
+      if (!ok) return;
+      state.folders = state.folders.filter(item => item.id !== id);
+      Object.keys(categories).forEach(category => {
+        state.library[category].forEach(record => {
+          if (record.folderId === id) record.folderId = '';
+        });
+      });
+      Object.keys(state.folderFilter).forEach(category => {
+        if (state.folderFilter[category] === id) state.folderFilter[category] = '';
+      });
+      render();
+    }
+
+    function renderLibrary() {
+      const query = state.libraryQuery || '';
+      const rows = [];
+      Object.keys(categories).forEach(category => {
+        state.library[category].forEach(item => {
+          const text = `${item.name || ''} ${detailFor(category, item)}`.toLowerCase();
+          if (!query || text.includes(query.toLowerCase())) rows.push({ category, item });
+        });
+      });
+
+      content.innerHTML = `
+        <div class="panel">
+          <h2>Libreria completa</h2>
+          <div class="field-row two">
+            <label>Cerca<input id="librarySearch" value="${escapeAttr(query)}"></label>
+            <label>Importa singolo o libreria<input class="file-input" id="libraryFileInput" type="file" accept="application/json,.json"></label>
+          </div>
+          <div class="actions" style="margin: 10px 0 12px;">
+            <button type="button" id="libraryImportBtn">Importa</button>
+            <button type="button" class="primary" id="libraryExportBtn">Esporta libreria</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Categoria</th>
+                  <th>Nome</th>
+                  <th>Cartella</th>
+                  <th>Dettaglio</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map(({ category, item }) => `
+                  <tr>
+                    <td><span class="badge">${escapeHtml(categories[category].plural)}</span></td>
+                    <td><strong>${escapeHtml(item.name || 'Senza nome')}</strong></td>
+                    <td>${escapeHtml(folderName(item.folderId))}</td>
+                    <td>${escapeHtml(detailFor(category, item))}</td>
+                    <td>
+                      <div class="actions">
+                        <button type="button" data-category="${category}" data-open-record="${item.id}">Apri</button>
+                        <button type="button" data-category="${category}" data-duplicate-record="${item.id}">Duplica</button>
+                        <button type="button" data-category="${category}" data-export-record="${item.id}">Esporta</button>
+                        <button type="button" class="danger" data-category="${category}" data-delete-record="${item.id}">Elimina</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('') || `<tr><td colspan="5">Nessun risultato.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      content.querySelector('#librarySearch').addEventListener('input', event => {
+        state.libraryQuery = event.target.value;
+        saveState();
+        render();
+      });
+      content.querySelector('#libraryExportBtn').addEventListener('click', () => document.querySelector('#exportAllBtn').click());
+      content.querySelector('#libraryImportBtn').addEventListener('click', () => content.querySelector('#libraryFileInput').click());
+      content.querySelector('#libraryFileInput').addEventListener('change', importJsonFile);
+      content.querySelectorAll('[data-open-record]').forEach(button => {
+        button.addEventListener('click', () => openRecord(button.dataset.category, button.dataset.openRecord));
+      });
+      content.querySelectorAll('[data-duplicate-record]').forEach(button => {
+        button.addEventListener('click', () => duplicateRecord(button.dataset.category, button.dataset.duplicateRecord));
+      });
+      content.querySelectorAll('[data-delete-record]').forEach(button => {
+        button.addEventListener('click', () => deleteRecord(button.dataset.category, button.dataset.deleteRecord));
+      });
+      content.querySelectorAll('[data-export-record]').forEach(button => {
+        button.addEventListener('click', () => exportRecord(button.dataset.category, button.dataset.exportRecord));
+      });
+    }
+
+    function getRecord(category, id) {
+      return state.library[category].find(item => item.id === id);
+    }
+
+    function createRecord(category) {
+      const record = defaultRecord(category);
+      state.library[category].push(record);
+      state.activeView = category;
+      state.activeTab = 'main';
+      state.activeRecord = { category, id: record.id };
+      openTab(category, record.id);
+      render();
+    }
+
+    function defaultRecord(category) {
+      const base = { id: uid(), name: `Nuovo ${categories[category].singular}`, folderId: state.folderFilter[category] || '' };
+      if (category === 'characters') {
+        return {
+          ...base,
+          activeJob: '',
+          resourceType: 'Mana',
+          currentHp: 0,
+          currentResource: 0,
+          physicalArmorManual: 10,
+          magicalArmorManual: 10,
+          abilities: defaultAbilities(),
+          skills: [],
+          passives: [],
+          inventoryItems: [],
+          equippedItems: [],
+          inventory: {},
+          notes: ''
+        };
+      }
+      if (category === 'statblocks') {
+        return {
+          ...base,
+          type: 'NPC',
+          level: 1,
+          role: '',
+          currentHp: 0,
+          maxHp: 0,
+          currentResource: 0,
+          maxResource: 0,
+          ap: 0,
+          mp: 0,
+          physicalArmor: 10,
+          magicalArmor: 10,
+          abilities: defaultAbilities(),
+          skills: [],
+          passives: [],
+          positiveConditions: '',
+          negativeConditions: '',
+          tactics: '',
+          drop: ''
+        };
+      }
+      if (category === 'items') {
+        return {
+          ...base,
+          type: 'arma',
+          rarity: 'Comune',
+          requirements: '',
+          bonusAp: 0,
+          bonusMp: 0,
+          bonusHp: 0,
+          bonusResource: 0,
+          bonusPhysicalArmor: 0,
+          bonusMagicalArmor: 0,
+          specialEffect: '',
+          grantedSkill: '',
+          description: ''
+        };
+      }
+      if (category === 'jobs') {
+        return {
+          ...base,
+          level: 1,
+          category: 'Base',
+          resourceType: 'Mana',
+          rankAp: 'B',
+          rankMp: 'B',
+          rankHp: 'B',
+          rankResource: 'B',
+          initialSkills: [],
+          classPassives: [],
+          unlockRequirements: '',
+          evolutions: '',
+          loreNotes: ''
+        };
+      }
+      if (category === 'skills') {
+        return {
+          ...base,
+          kind: 'Fisica',
+          targetArmor: 'CA Fisica',
+          scaling: 'AP',
+          scalingPercent: 100,
+          resourceCost: 0,
+          description: '',
+          extraEffect: '',
+          notes: ''
+        };
+      }
+      return {
+        ...base,
+        type: 'Generica',
+        effect: '',
+        activation: 'Sempre attiva',
+        condition: '',
+        bonusAp: 0,
+        bonusMp: 0,
+        bonusHp: 0,
+        bonusResource: 0,
+        bonusPhysicalArmor: 0,
+        bonusMagicalArmor: 0,
+        notes: ''
+      };
+    }
+
+    function defaultAbilities() {
+      return dndAbilities.reduce((acc, name) => {
+        acc[name] = { mod: 0 };
+        return acc;
+      }, {});
+    }
+
+    function openRecord(category, id) {
+      state.activeView = category;
+      state.activeTab = 'main';
+      state.activeRecord = { category, id };
+      openTab(category, id);
+      render();
+    }
+
+    function openTab(category, id) {
+      if (!state.openTabs.some(tab => tab.category === category && tab.id === id)) {
+        state.openTabs.push({ category, id });
+      }
+    }
+
+    function duplicateRecord(category, id) {
+      const record = getRecord(category, id);
+      if (!record) return;
+      const copy = clone(record);
+      copy.id = uid();
+      copy.name = `${record.name || categories[category].singular} copia`;
+      state.library[category].push(copy);
+      openRecord(category, copy.id);
+    }
+
+    function deleteRecord(category, id) {
+      const record = getRecord(category, id);
+      if (!record) return;
+      const ok = confirm(`Eliminare "${record.name || 'Senza nome'}"?`);
+      if (!ok) return;
+      state.library[category] = state.library[category].filter(item => item.id !== id);
+      state.openTabs = state.openTabs.filter(tab => !(tab.category === category && tab.id === id));
+      state.activeRecord = null;
+      render();
+    }
+
+    function exportRecord(category, id) {
+      const record = getRecord(category, id);
+      if (!record) return;
+      exportJson(`${safeFileName(record.name || categories[category].singular)}.json`, {
+        kind: 'single-record',
+        category,
+        exportedAt: new Date().toISOString(),
+        data: record
+      });
+    }
+
+    function exportJson(filename, data) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importJsonFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          importPayload(parsed);
+          event.target.value = '';
+          render();
+        } catch {
+          alert('File JSON non valido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function importPayload(payload) {
+      if (payload.kind === 'full-library' && payload.data) {
+        if (Array.isArray(payload.folders)) {
+          payload.folders.forEach(folder => {
+            const copy = clone(folder);
+            if (!copy.id || state.folders.some(item => item.id === copy.id)) copy.id = uid();
+            if (!copy.name) copy.name = 'Cartella importata';
+            state.folders.push(copy);
+          });
+        }
+        Object.keys(categories).forEach(category => {
+          const incoming = Array.isArray(payload.data[category]) ? payload.data[category] : [];
+          incoming.forEach(item => addImportedRecord(category, item));
+        });
+        return;
+      }
+      if (payload.kind === 'single-record' && payload.category && payload.data) {
+        addImportedRecord(payload.category, payload.data);
+        return;
+      }
+      const guessed = guessCategory(payload);
+      if (guessed) addImportedRecord(guessed, payload);
+      else alert('Non riesco a capire che tipo di elemento contiene il file.');
+    }
+
+    function addImportedRecord(category, item) {
+      if (!state.library[category]) return;
+      const copy = clone(item);
+      if (!copy.id || getRecord(category, copy.id)) copy.id = uid();
+      state.library[category].push(copy);
+    }
+
+    function guessCategory(item) {
+      if (item.rankAp || item.rankHp) return 'jobs';
+      if (item.scalingPercent && item.targetArmor) return 'skills';
+      if (item.bonusPhysicalArmor !== undefined && item.effect !== undefined) return 'passives';
+      if (item.rarity || item.specialEffect) return 'items';
+      if (item.tactics || item.drop || item.type === 'Boss') return 'statblocks';
+      if (item.activeJob || item.inventory) return 'characters';
+      return null;
+    }
+
+    function safeFileName(name) {
+      return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'elemento';
+    }
+
+    function formatNumber(value) {
+      return Number.isInteger(value) ? value : value.toFixed(2);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    const originalRenderEditor = renderEditor;
+    renderEditor = function patchedRenderEditor(category, record) {
+      originalRenderEditor(category, record);
+      const panel = document.querySelector('#editorPanel');
+      if (panel) bindNestedInputs(panel, category, record.id);
+    };
+
+    render();
+  </script>
+</body>
+</html>
