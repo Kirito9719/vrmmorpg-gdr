@@ -553,7 +553,7 @@
         <button type="button" id="importBtn">Apri file</button>
         <input class="file-input" id="fileInput" type="file" accept="application/json,.json">
         <small>I dati restano anche nel browser di questo PC. Usa Salva file per creare una copia esportabile.</small>
-        <small class="version">Versione 1.0</small>
+        <small class="version">Versione 1.1</small>
       </div>
     </aside>
 
@@ -969,7 +969,7 @@
     }
 
     function detailFor(category, item) {
-      if (category === 'characters') return `${item.activeJob || 'Nessun job'}`;
+      if (category === 'characters') return `${activeJobForCharacter(item)?.name || 'Nessun job'}`;
       if (category === 'statblocks') return `Lv ${item.level || 1} - ${item.type || 'NPC'} - ${item.role || ''}`;
       if (category === 'items') return `${item.type || 'oggetto'} - ${item.rarity || 'Comune'}`;
       if (category === 'jobs') return `Lv ${item.level || 1} - ${item.category || 'Base'} - ${item.resourceType || 'Mana'}`;
@@ -1034,7 +1034,7 @@
           <div class="stack">
             <div class="field-row two">
               ${inputField('Nome PG', 'name', record.name)}
-              ${selectField('Classe / Job attivo', 'activeJob', record.activeJob, jobNameOptions())}
+              ${selectField('Classe / Job attivo', 'activeJob', activeJob ? activeJob.id : '', jobNameOptions())}
             </div>
             <div class="field-row two">
               ${inputField('Tipo risorsa', 'resourceType', record.resourceType || resourceTypeForJob(record.activeJob))}
@@ -1060,8 +1060,8 @@
             </div>
           </div>
         ` : ''}
-        ${state.activeTab === 'skills' ? listChooser(record, 'skills', 'Skill conosciute', state.library.skills, skillSummary, 'skills') : ''}
-        ${state.activeTab === 'passives' ? listChooser(record, 'passives', 'Passive attive o note', state.library.passives, passiveSummary, 'passives') : ''}
+        ${state.activeTab === 'skills' ? listChooser(record, 'skills', 'Skill', state.library.skills, skillSummary, 'skills', activeJob ? activeJob.initialSkills || [] : [], 'Job attivo') : ''}
+        ${state.activeTab === 'passives' ? listChooser(record, 'passives', 'Passive', state.library.passives, passiveSummary, 'passives', activeJob ? activeJob.classPassives || [] : [], 'Job attivo') : ''}
         ${state.activeTab === 'inventory' ? inventoryEditor(record) : ''}
         ${state.activeTab === 'job' ? jobCrystalEditor(record) : ''}
         ${state.activeTab === 'notes' ? `${textareaField('Note', 'notes', record.notes)}` : ''}
@@ -1178,8 +1178,8 @@
             ${metric('HP base al livello', baseHp)}
             ${metric('Risorsa base al livello', baseResource)}
           </div>
-          ${listChooser(record, 'initialSkills', 'Skill iniziali', state.library.skills, skillSummary, 'skills')}
-          ${listChooser(record, 'classPassives', 'Passive classe', state.library.passives, passiveSummary, 'passives')}
+          ${listChooser(record, 'initialSkills', 'Skill', state.library.skills, skillSummary, 'skills')}
+          ${listChooser(record, 'classPassives', 'Passive', state.library.passives, passiveSummary, 'passives')}
           ${textareaField('Requisiti di sblocco', 'unlockRequirements', record.unlockRequirements)}
           ${textareaField('Evoluzioni possibili', 'evolutions', record.evolutions)}
           ${textareaField('Note lore', 'loreNotes', record.loreNotes)}
@@ -1251,6 +1251,11 @@
           if (!record) return;
           const key = field.dataset.field;
           record[key] = field.type === 'number' ? Number(field.value || 0) : field.value;
+          if (category === 'characters' && key === 'activeJob') {
+            const job = activeJobForCharacter(record);
+            if (job) record.resourceType = job.resourceType || record.resourceType;
+          }
+          saveState();
           render();
         });
       });
@@ -1328,7 +1333,11 @@
       return `
         <label>${escapeHtml(label)}
           <select data-field="${key}">
-            ${options.map(option => `<option value="${escapeAttr(option)}" ${option === value ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('')}
+            ${options.map(option => {
+              const optionValue = typeof option === 'object' ? option.value : option;
+              const optionLabel = typeof option === 'object' ? option.label : option;
+              return `<option value="${escapeAttr(optionValue)}" ${optionValue === value ? 'selected' : ''}>${escapeHtml(optionLabel)}</option>`;
+            }).join('')}
           </select>
         </label>
       `;
@@ -1351,23 +1360,27 @@
       }).join('');
     }
 
-    function listChooser(record, listKey, title, source, summaryFn, sourceCategory) {
+    function listChooser(record, listKey, title, source, summaryFn, sourceCategory, inheritedIds = [], inheritedLabel = '') {
       const ids = record[listKey] || [];
-      const cards = ids.map(id => {
+      const inherited = [...new Set(inheritedIds)];
+      const allIds = [...new Set([...ids, ...inherited])];
+      const cards = allIds.map(id => {
         const item = source.find(entry => entry.id === id);
         if (!item) return '';
+        const fromJob = inherited.includes(id);
         return `
           <div class="mini-card">
             <div class="mini-card-head">
               <strong>${escapeHtml(item.name || 'Senza nome')}</strong>
-              <button type="button" class="danger" data-list-remove="${listKey}" data-item-id="${id}">Rimuovi</button>
+              ${ids.includes(id) ? `<button type="button" class="danger" data-list-remove="${listKey}" data-item-id="${id}">Rimuovi</button>` : ''}
             </div>
             <div class="subtle">${escapeHtml(summaryFn(item))}</div>
+            ${fromJob ? `<div class="subtle">${escapeHtml(inheritedLabel)}</div>` : ''}
           </div>
         `;
       }).join('');
 
-      const available = source.filter(item => !ids.includes(item.id));
+      const available = source.filter(item => !allIds.includes(item.id));
       return `
         <div class="stack">
           <h3>${escapeHtml(title)}</h3>
@@ -1471,7 +1484,11 @@
     }
 
     function activeJobForCharacter(record) {
-      return state.library.jobs.find(entry => entry.name === record.activeJob);
+      return findJob(record.activeJob);
+    }
+
+    function findJob(jobKey) {
+      return state.library.jobs.find(entry => entry.id === jobKey) || state.library.jobs.find(entry => entry.name === jobKey);
     }
 
     function growthFor(stat, rank) {
@@ -1510,7 +1527,8 @@
 
     function calculatePassiveBonuses(record) {
       const result = { ap: 0, mp: 0, hp: 0, resource: 0, physicalArmor: 0, magicalArmor: 0 };
-      (record.passives || []).forEach(id => {
+      const jobPassives = activeJobForCharacter(record)?.classPassives || [];
+      [...new Set([...(record.passives || []), ...jobPassives])].forEach(id => {
         const passive = state.library.passives.find(entry => entry.id === id);
         if (!passive || passive.activation === 'Condizionale') return;
         result.ap += Number(passive.bonusAp || 0);
@@ -1524,13 +1542,15 @@
     }
 
     function resourceTypeForJob(jobName) {
-      const job = state.library.jobs.find(entry => entry.name === jobName);
+      const job = findJob(jobName);
       return job ? job.resourceType : 'Mana';
     }
 
     function jobNameOptions() {
-      const names = state.library.jobs.map(job => job.name).filter(Boolean);
-      return names.length ? names : [''];
+      return [
+        { value: '', label: 'Nessun job' },
+        ...state.library.jobs.filter(job => job.name).map(job => ({ value: job.id, label: job.name }))
+      ];
     }
 
     function skillSummary(skill) {
